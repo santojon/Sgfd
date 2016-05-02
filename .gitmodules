@@ -1,0 +1,3 @@
+[submodule "src/lib/bhdr"]
+	path = src/lib/bhdr
+	url = git://github.com/santojon/Bhdr.git
