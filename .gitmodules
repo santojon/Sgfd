@@ -1,6 +1,6 @@
-[submodule "src/lib/bhdr"]
-	path = src/lib/bhdr
+[submodule "src/lib/commom/bhdr"]
+	path = src/lib/commom/bhdr
 	url = git://github.com/santojon/Bhdr.git
-[submodule "src/lib/hdllr"]
-	path = src/lib/hdllr
+[submodule "src/lib/commom/hdllr"]
+	path = src/lib/commom/hdllr
 	url = git://github.com/santojon/Hdllr.git
