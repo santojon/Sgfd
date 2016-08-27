@@ -2,20 +2,30 @@
  * Load all needed data here. Chain order is very important!
  */
 
-// Verifies if has any full loading
-if (appConfig.back['full']) {
+with (appConfig) {
+    // verify nullities
+    if (!back['domainClasses']) back['domainClasses'] = [];
+    if (!back['controllers']) back['controllers'] = [];
+    if (!back['services']) back['services'] = [];
+    if (!back['views']) back['views'] = [];
 
-    if (!appConfig.back['domainClasses']) appConfig.back['domainClasses'] = [];
-    if (!appConfig.back['controllers']) appConfig.back['controllers'] = [];
-    if (!appConfig.back['services']) appConfig.back['services'] = [];
-    if (!appConfig.back['views']) appConfig.back['views'] = [];
+    if (!front['externalScripts']) front['externalScripts'] = [];
+    if (!front['externalStyles']) front['externalStyles'] = [];
+    if (!front['scripts']) front['scripts'] = [];
+    if (!front['styles']) front['styles'] = [];
 
-    appConfig.back.full.forEach(function(conf) {
-        appConfig.back.domainClasses.push(conf);
-        appConfig.back.controllers.push(conf);
-        appConfig.back.services.push(conf);
-        appConfig.back.views.push(conf);
-    });
+    if (!conf['dependencies']) conf['dependencies'] = [];
+    
+
+    // Verifies if has any full loading
+    if (back['full']) {
+        back.full.forEach(function(conf) {
+            back.domainClasses.push(conf);
+            back.controllers.push(conf);
+            back.services.push(conf);
+            back.views.push(conf);
+        });
+    }
 }
 
 // Then load all things
