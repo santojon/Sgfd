@@ -26,10 +26,18 @@ with (appConfig) {
             back.views.push(conf);
         });
     }
+    
+    // if no container, it will be the window
+    if (!conf.container) conf.container = window;
 }
 
 // Then load all things
 with (Base.autoMerge(appConfig.front, appConfig.back, appConfig.conf)) {
+    // Load bwf domain files
+    if (bwfDomain) {
+        progressiveLoad(bwfDomains, loadBwfDomain);
+    }
+
     // Load project dependencies
     progressiveLoad(dependencies, loadScript, function() {
         // Inject 'classLoader'

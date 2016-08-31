@@ -30,7 +30,7 @@ var Base = {
         // Adding the script tag to the head as suggested before
         var head = document.getElementsByTagName('head')[0];
         var script = document.createElement('script');
-        script.type = 'text/x-' + type;
+        script.type = 'text/' + type;
         script.src = url;
 
         // Then bind the event to the callback function.
@@ -49,7 +49,7 @@ var Base = {
             // Adding the script tag to the head as suggested before
             var head = document.getElementsByTagName('head')[0];
             var script = document.createElement('script');
-            script.type = 'text/x-' + type;
+            script.type = 'text/' + type;
             script.src = url;
 
             // Then bind the event to the callback function.
@@ -291,6 +291,46 @@ var Base = {
             var script = document.createElement('script');
             script.type = 'text/javascript';
             script.src = 'domain/' + url + '.js';
+
+            // Then bind the event to the callback function.
+            // There are several events for cross browser compatibility.
+            if (i === (urls.length - 1)) {
+                //script.onreadystatechange = callback;
+                script.onload = callback;
+            }
+
+            // Fire the loading
+            head.appendChild(script);
+        });
+    },
+    /**
+     * Function responsible to fetch bwf domain scripts
+     */
+    loadBwfDomain: function(url, callback) {
+        // Adding the script tag to the head as suggested before
+        var head = document.getElementsByTagName('head')[0];
+        var script = document.createElement('script');
+        script.type = 'text/bwf';
+        script.src = 'domain/' + url + '.bwf';
+
+        // Then bind the event to the callback function.
+        // There are several events for cross browser compatibility.
+        //script.onreadystatechange = callback;
+        script.onload = callback;
+
+        // Fire the loading
+        head.appendChild(script);
+    },
+    /**
+     * Function responsible to fetch bwf domain scripts
+     */
+    loadBwfDomains: function(urls, callback) {
+        urls.forEach(function(url, i) {
+            // Adding the script tag to the head as suggested before
+            var head = document.getElementsByTagName('head')[0];
+            var script = document.createElement('script');
+            script.type = 'text/bwf';
+            script.src = 'domain/' + url + '.bwf';
 
             // Then bind the event to the callback function.
             // There are several events for cross browser compatibility.
