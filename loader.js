@@ -56,6 +56,7 @@ with (Base.autoMerge(appConfig.front, appConfig.back, appConfig.conf)) {
                 progressiveLoad(controllers, loadController, function() {
 
                     // Map the classes to 'database'
+                    // TODO: change how to make this
                     progressiveLoad(['dataMappings.js'], loadScript, function() {
                         // If bootstrap data is set on
                         if (bootstrap) {

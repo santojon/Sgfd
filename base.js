@@ -4,6 +4,8 @@ var Base = {
      * @param lst: the array of files
      * @param func: the load function to be used
      * @param callback: an optional callback to run in the end of the chain
+     * 
+     * TODO: work for custom containers (now only for window)
      */
     progressiveLoad: function(lst, func, callback) {
         if (lst instanceof Array) {
@@ -310,7 +312,7 @@ var Base = {
         // Adding the script tag to the head as suggested before
         var head = document.getElementsByTagName('head')[0];
         var script = document.createElement('script');
-        script.type = 'text/bwf';
+        script.type = 'text/beowulf';
         script.src = 'domain/' + url + '.bwf';
 
         // Then bind the event to the callback function.
@@ -329,7 +331,7 @@ var Base = {
             // Adding the script tag to the head as suggested before
             var head = document.getElementsByTagName('head')[0];
             var script = document.createElement('script');
-            script.type = 'text/bwf';
+            script.type = 'text/beowulf';
             script.src = 'domain/' + url + '.bwf';
 
             // Then bind the event to the callback function.
