@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Norse Test</title>
+		<meta charset="UTF-8">
+	</head>
+	<body>
+		<script type="text/javascript" src="../sgfd.js"></script>
+		<script type="text/javascript">
+			// Loads all needed things to run app. It need 'sgfd.js' loaded to work
+			// you can load appConfig this way or using a path to js file with 'appConfig' variable
+			new Sgfd({
+				front: {},
+				back: {
+					bwfDomains: []
+				},
+				conf: {
+					appName: '',
+					dependencies: [
+						// libs locations
+					],
+					dataPool: '',
+					classLoader: '',
+					bwfDomain: false,
+					bootstrap: false
+				}
+			}).load();
+		</script>
+	</body>
+</html>

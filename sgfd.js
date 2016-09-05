@@ -1,4 +1,138 @@
-var Base = {
+/**
+ * Class responsible to create an configurable application
+ * @param appConfig: the application configuration (an object or path to js file with 'appConfig' variable)
+ * @param [optional] options: the options used in initialization, if needed
+ */
+function Sgfd(appConfig, options) {
+    var sgfd = this;
+    var options = options || {};
+    if (!options['container']) options.container = window;
+
+    /**
+     * Load all needed data here. Chain order is very important!
+     */
+    var loader = function() {
+        with (Sgfd.Base) {
+            var loadList = [];
+            if (options.externalSettings) {
+                loadList.push(options.externalSettings);
+            }
+
+            if (typeof appConfig === 'string') loadList.push(appConfig);
+            progressiveLoad(loadList, loadScript, function() {
+                if (options.container.appConfig) {
+                    appConfig = options.container.appConfig;
+                }
+
+                with (appConfig) {
+                    // verify nullities
+                    if (!back['domainClasses']) back['domainClasses'] = [];
+                    if (!back['bwfDomains']) back['bwfDomains'] = [];
+                    if (!back['controllers']) back['controllers'] = [];
+                    if (!back['services']) back['services'] = [];
+                    if (!back['views']) back['views'] = [];
+
+                    if (!front['externalScripts']) front['externalScripts'] = [];
+                    if (!front['externalStyles']) front['externalStyles'] = [];
+                    if (!front['scripts']) front['scripts'] = [];
+                    if (!front['styles']) front['styles'] = [];
+
+                    if (!conf['dependencies']) conf['dependencies'] = [];
+                    
+
+                    // Verifies if has any full loading
+                    if (back['full']) {
+                        back.full.forEach(function(conf) {
+                            back.domainClasses.push(conf);
+                            back.bwfDomains.push(conf);
+                            back.controllers.push(conf);
+                            back.services.push(conf);
+                            back.views.push(conf);
+                        });
+                    }
+                    
+                    // if no container, it will be the window
+                    if (!conf['container']) conf.container = window;
+                }
+
+                // Then load all things
+                with (autoMerge(appConfig.front, appConfig.back, appConfig.conf)) {
+                    // Load bwf domain files
+                    if (bwfDomain) {
+                        progressiveLoad(bwfDomains, loadBwfDomain);
+                    }
+
+                    // Load project dependencies
+                    progressiveLoad(dependencies, loadScript, function() {
+                        // Inject 'classLoader'
+                        container['classLoader'] = new container[classLoader]();
+
+                        // Inject 'database' access
+                        container['dataPool'] = new container[dataPool]();
+
+                        // Inject 'pages' manager
+                        // TODO: create a page loader
+                        container['pages'] = new Object();
+
+                        // Load back-end files
+                        progressiveLoad(domainClasses, loadDomain, function() {
+                            progressiveLoad(services, loadService, function() {
+                                progressiveLoad(controllers, loadController, function() {
+
+                                    // Map the classes to 'database'
+                                    // TODO: change how to make this
+                                    progressiveLoad(['dataMappings.js'], loadScript, function() {
+                                        // If bootstrap data is set on
+                                        if (bootstrap) {
+                                            progressiveLoad(['bootstrap.js'], loadScript);
+                                        }
+                                    });
+
+                                    // Load front-end files
+                                    progressiveLoad(externalScripts, loadScript, function() {
+                                        progressiveLoad(scripts, loadScriptAsset, function() {
+                                            progressiveLoad(externalStyles, loadStyle, function() {
+                                                progressiveLoad(styles, loadStyleAsset, function() {
+                                                    progressiveLoad(views, loadView, function() {
+                                                        // Run main script
+                                                        progressiveLoad(['main.js'], loadScript);
+                                                    });
+                                                });
+                                            });
+                                        });
+                                    });
+                                });
+                            });
+                        });
+                    });
+                }
+            });
+        }
+    };
+
+    // instance related things
+    sgfd.prototype = {
+        /**
+         * Initilizes the app
+         */
+        init: function() {
+            return this;
+        },
+        /**
+         * Load the app using given configs
+         */
+        load: function() {
+            loader();
+        }
+    };
+
+    return sgfd.prototype.init();
+}
+
+/**
+ * Base functions to load a sort of things into app
+ */
+Sgfd.Base = {
     /**
      * Function responsible to load an Array of files in chain
      * @param lst: the array of files
@@ -12,7 +146,7 @@ var Base = {
             if (lst.length > 1) {
                 func(lst[0], function(){
                     lst.shift();
-                    Base.progressiveLoad(lst, func, callback);
+                    Sgfd.Base.progressiveLoad(lst, func, callback);
                 });
             } else if (lst.length === 1) {
                 func(lst[0], callback || function(){});
@@ -315,13 +449,11 @@ var Base = {
         script.type = 'text/beowulf';
         script.src = 'domain/' + url + '.bwf';
 
-        // Then bind the event to the callback function.
-        // There are several events for cross browser compatibility.
-        //script.onreadystatechange = callback;
-        script.onload = callback;
-
         // Fire the loading
         head.appendChild(script);
+
+        // call the callback function
+        callback();
     },
     /**
      * Function responsible to fetch bwf domain scripts
@@ -337,8 +469,8 @@ var Base = {
             // Then bind the event to the callback function.
             // There are several events for cross browser compatibility.
             if (i === (urls.length - 1)) {
-                //script.onreadystatechange = callback;
-                script.onload = callback;
+                // call the callback function
+                callback();
             }
 
             // Fire the loading
@@ -463,6 +595,6 @@ var Base = {
             result = merge_options(argument, result);
         });
 
-        return merge_options(Base, result);
+        return merge_options(Sgfd.Base, result);
     }
 };

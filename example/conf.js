@@ -35,14 +35,13 @@ var appConfig = {
         bwfDomains: []
     },
     conf: {
-        container: window,
         appName: '',
         dependencies: [
             // libs locations
         ],
         dataPool: '',
         classLoader: '',
-        bwfDomain: true,
+        bwfDomain: false,
         bootstrap: false
     }
 };
