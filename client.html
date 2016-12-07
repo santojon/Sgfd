@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Sgfd Client Console</title>
+        <meta charset="UTF-8">
+
+        <!-- Sgfd lib, used to get client access -->
+        <script type="text/javascript" src="sgfd.js"></script>
+        <style>
+            /* console related */
+            .r {color: red !important;}
+            .g {color: limegreen !important;}
+
+            #console {
+                height: 300px !important;
+                background-color: black !important;
+                color: white !important;
+                overflow: auto;
+                border: none !important;
+                width: 99.8% !important;
+            }
+
+            #log {
+                height: 150px !important;
+                background-color: whitesmoke !important;
+                color: black !important;
+                overflow: auto;
+                border: none !important;
+                width: 100% !important;
+            }
+
+            #run {
+                width: 50px;
+                height: 30px;
+                float: right;
+                margin-bottom: 5px;
+            }
+
+            #res {
+                float: left;
+            }
+        </style>
+    </head>
+    <body>
+        <h2>Sgfd Client Console</h2>
+        <div class="container">
+            <textarea id="console" placeholder="type 'help' (without quotes) to view commands"></textarea>
+        </div>
+        <div class="container">
+            <h4 id="res">Created resources</h4>
+            <button id="run">Run</button>
+        </div>
+        <div class="container">
+            <div id="log" disabled></div>
+        </div>
+
+        <script type="text/javascript">
+            // Above console related
+            document.getElementById('console').onclick = function() {
+                document.getElementById('console').value = '';
+            };
+            document.getElementById('log').onclick = function() {
+                document.getElementById('log').innerHTML = '';
+            };
+            var run = document.getElementById('run');
+            var log = document.getElementById('log');
+            run.onclick = function() {
+                var commands = document.getElementById('console').value;
+                var commandList = commands.split('\n');
+
+                document.getElementById('console').value = '';
+                document.getElementById('log').innerHTML = '';
+
+                commandList.forEach(function(command) {
+                    var parts = command.split(' ');
+                    parts = parts.filter(function(p) {
+                        return p.trim() !== '';
+                    });
+
+                    var com = parts[0];
+                    parts.reverse();
+                    parts.pop();
+                    parts.reverse();
+                    var args = parts;
+
+                    runCommand(com, args);
+                });
+            };
+
+            var runCommand = function(com, args) {
+                switch (com) {
+                    case 'help':
+                        var cons = document.getElementById('console').value;
+                        cons += 'help:\n\n\
+    - create <appname> <sgfd path> <options>    -->     Create a new Sgfd application\n\
+                                                        <sgfd path>: path to sgfd.js location (use \'null\' to avoid this)\n\
+                                                        <options>: options JSON object. Ex: {"controllers":["test"]} (without spaces)\n\
+                                                        valid options: [views, controllers, services, bridges]\n\
+                                                        (all files with name described in options will be generated)\n\
+                                                        (all files will download automatically)\n\n\
+    - generate <type> <name(s)>                 -->     Generate new Sgfd <type> object(s)\n\
+                                                        <type>: [view(s), controller(s), service(s), bridge(s)]\n\
+                                                        (all files with name described will be generated)\n\
+                                                        (all files will download automatically)\n';
+                        document.getElementById('console').value = cons;
+                        break;
+
+                    case 'create':
+                        if (args[0]) {
+                            if (args[1]) {
+                                if (args[2]) {
+                                    var args2 = JSON.parse(args[2]);
+                                    if (args[1] !== 'null') {
+                                        Sgfd.Cli.scafold(args[0], args2, args[1]);
+                                    } else {
+                                        Sgfd.Cli.scafold(args[0], args2);
+                                        log.innerHTML += '<div class="r">Warn: No sgfd.js path passed.<br>\
+                                                            You have to put it manually into index.html file.<br>\
+                                                                Replace the text {{ Sgfd location goes here! }} with the path.</div>';
+                                    }
+
+                                    if (args2['views']) {
+                                        args2.views.forEach(function(v) {
+                                            log.innerHTML += '<div class="g">Generated: ' + v + '.js</div>';
+                                        });
+                                    }
+                                    if (args2['controllers']) {
+                                        args2.controllers.forEach(function(v) {
+                                            log.innerHTML += '<div class="g">Generated: ' + v + 'controller.js</div>';
+                                        });
+                                    }
+                                    if (args2['services']) {
+                                        args2.services.forEach(function(v) {
+                                            log.innerHTML += '<div class="g">Generated: ' + v + 'service.js</div>';
+                                        });
+                                    }
+                                    if (args2['bridges']) {
+                                        args2.bridges.forEach(function(v) {
+                                            log.innerHTML += '<div class="g">Generated: ' + v + 'bridge.js</div>';
+                                        });
+                                    }
+                                } else {
+                                    if (args[1] !== 'null') {
+                                        Sgfd.Cli.init(args[0], args[1]);
+                                    } else {
+                                        Sgfd.Cli.init(args[0]);
+                                        log.innerHTML += '<div class="r">Warn: No sgfd.js path passed.<br>\
+                                                            You have to put it manually into index.html file.<br>\
+                                                                Replace the text {{ Sgfd location goes here! }} with the path.</div>';
+                                    }
+                                }
+                            } else {
+                                Sgfd.Cli.init(args[0]);
+                                log.innerHTML += '<div class="r">Warn: No sgfd.js path passed.<br>\
+                                                    You have to put it manually into index.html file.<br>\
+                                                        Replace the text {{ Sgfd location goes here! }} with the path.</div>';
+                            }
+                            log.innerHTML += '<div class="g">Generated: conf.js</div>';
+                            log.innerHTML += '<div class="g">Generated: dataMapings.js</div>';
+                            log.innerHTML += '<div class="g">Generated: main.js</div>';
+                            log.innerHTML += '<div class="g">Generated: index.html</div>';
+                        }
+                        break;
+
+                    case 'generate':
+                        switch (args[0]) {
+                            case 'view':
+                                if (args[1]) {
+                                    Sgfd.Cli.generateView(args[1]);
+                                    log.innerHTML += '<div class="g">Generated: ' + args[1] + '.js</div>';
+                                } else {
+                                    log.innerHTML += '<div class="r">Your ' + args[0] + ' needs a name!</div>';
+                                }
+                                break;
+                            
+                            case 'views':
+                                if (args[1]) {
+                                    args.reverse();
+                                    args.pop();
+                                    args.reverse();
+
+                                    args.forEach(function(a) {
+                                        Sgfd.Cli.generateView(a);
+                                        log.innerHTML += '<div class="g">Generated: ' + a + '.js</div>';
+                                    });
+                                } else {
+                                    log.innerHTML += '<div class="r">Your ' + args[0] + ' needs some names!</div>';
+                                }
+                                break;
+                            
+                            case 'controller':
+                                if (args[1]) {
+                                    Sgfd.Cli.generateController(args[1]);
+                                    log.innerHTML += '<div class="g">Generated: ' + args[1] + 'controller.js</div>';
+                                } else {
+                                    log.innerHTML += '<div class="r">Your ' + args[0] + ' needs a name!</div>';
+                                }
+                                break;
+
+                            case 'controllers':
+                                if (args[1]) {
+                                    args.reverse();
+                                    args.pop();
+                                    args.reverse();
+
+                                    args.forEach(function(a) {
+                                        Sgfd.Cli.generateController(a);
+                                        log.innerHTML += '<div class="g">Generated: ' + a + 'controller.js</div>';
+                                    });
+                                } else {
+                                    log.innerHTML += '<div class="r">Your ' + args[0] + ' needs some names!</div>';
+                                }
+                                break;
+
+                            case 'service':
+                                if (args[1]) {
+                                    Sgfd.Cli.generateService(args[1]);
+                                    log.innerHTML += '<div class="g">Generated: ' + args[1] + 'service.js</div>';
+                                } else {
+                                    log.innerHTML += '<div class="r">Your ' + args[0] + ' needs a name!</div>';
+                                }
+                                break;
+
+                            case 'services':
+                                if (args[1]) {
+                                    args.reverse();
+                                    args.pop();
+                                    args.reverse();
+
+                                    args.forEach(function(a) {
+                                        Sgfd.Cli.generateService(a);
+                                        log.innerHTML += '<div class="g">Generated: ' + a + 'service.js</div>';
+                                    });
+                                } else {
+                                    log.innerHTML += '<div class="r">Your ' + args[0] + ' needs some names!</div>';
+                                }
+                                break;
+
+                            case 'bridge':
+                                if (args[1]) {
+                                    Sgfd.Cli.generateBridge(args[1]);
+                                    log.innerHTML += '<div class="g">Generated: ' + args[1] + 'bridge.js</div>';
+                                } else {
+                                    log.innerHTML += '<div class="r">Your ' + args[0] + ' needs a name!</div>';
+                                }
+                                break;
+
+                            case 'bridges':
+                                if (args[1]) {
+                                    args.reverse();
+                                    args.pop();
+                                    args.reverse();
+
+                                    args.forEach(function(a) {
+                                        Sgfd.Cli.generateBridge(a);
+                                        log.innerHTML += '<div class="g">Generated: ' + a + 'bridge.js</div>';
+                                    });
+                                } else {
+                                    log.innerHTML += '<div class="r">Your ' + args[0] + ' needs some names!</div>';
+                                }
+                                break;
+
+                            default:
+                                log.innerHTML += '<div class="r">No such type \'' + args[0] + '\'!</div>';
+                                break;
+                        }
+                        break;
+
+                    default:
+                        log.innerHTML += '<div class="r">No such command \'' + com + '\'!</div>'; 
+                        break;
+                }
+            };
+        </script>
+    </body>
+</html>
