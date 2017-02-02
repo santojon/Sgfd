@@ -111,9 +111,15 @@ document.body.innerHTML = \'Hello world!\';',
             return 'with (Sgfd.Base) {\n\
     var ' + name + 'Bridge = new Sgfd.Bridge({\n\
         metaName: \'' + name + 'Bridge\',\n\
-        index: function() {\n\
-            // A function to be used in services etc\n\
-            // Put it into \'data/bridges\' folder of your app\n\
+        type: \'bridge_type\',\n\
+        base: \'URL_or_path_to_bridge_entry_point\',\n\
+        paths: {\n\
+            // your_path(s): \'path_location\',\n\
+        },\n\
+        bridgeTo: (to) => {\n\
+            with (' + name + 'Bridge) {\n\
+                return base + \'/\' + paths[to]\n\
+            }\n\
         }\n\
     });\n\
 };';

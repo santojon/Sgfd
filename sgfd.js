@@ -99,15 +99,18 @@ function Sgfd(appConfig, options) {
                         // Inject 'database' access
                         if (appConfig.conf['dataPool']) container['dataPool'] = new container[dataPool]();
 
-                        // Inject 'pages' manager
-                        // TODO: create a page loader
-                        container['pages'] = new Object();
-
                         // Inject views names
                         container['views'] = [];
                         views.forEach(function(view) {
                             container.views.push(view);
                         });
+
+                        // Inject 'pages' manager
+                        if (appConfig.conf['pagesLoader']) {
+                            container['pages'] = new container[pagesLoader](container.views);
+                        } else {
+                            container['pages'] = new Object();
+                        }
 
                         // Load back-end files
                         progressiveLoad(domainClasses, loadDomain, function() {
