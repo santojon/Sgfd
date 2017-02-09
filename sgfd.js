@@ -6,6 +6,28 @@
 function Sgfd(appConfig, options) {
     var sgfd = this;
     var options = options || {};
+
+    var _session = {};
+    /**
+     * Sgfd Session update function
+     * @param params: the params object to include all properties into session
+     */
+    var updateSession = (params) => {
+        if (params) {
+            _session = _session || {}
+            Object.keys(params).forEach((p) => {
+                _session[p] = params[p]
+            })
+        }
+    }
+
+    /**
+     * Save session existent in Sgfd to localstorage
+     */
+    var exportSession = () => {
+        localStorage.setItem('_session', JSON.stringify(_session))
+    }
+
     if (!options['container']) options.container = window;
 
     /**
@@ -106,10 +128,54 @@ function Sgfd(appConfig, options) {
                         });
 
                         // Inject 'pages' manager
-                        if (appConfig.conf['pagesLoader']) {
-                            container['pages'] = new container[pagesLoader](container.views);
+                        if (appConfig.conf['pageLoader']) {
+                            container['pages'] = new container[pageLoader](container.views);
                         } else {
                             container['pages'] = new Object();
+                        }
+
+                        // Inject 'security' watcher
+                        if (appConfig.conf['securityWatcher']) container['watcher'] = new container[securityWatcher]();
+
+                        // Inject '_session'
+                        if (appConfig.conf['session']) {
+                            /**
+                             * Get session existent in localstorage
+                             */
+                            container.getSession = () => {
+                                return JSON.parse(localStorage.getItem('_session'))
+                            }
+
+                            /**
+                             * Remove session from localstorage
+                             */
+                            container.cleanSession = () => {
+                                localStorage.removeItem('_session')
+                            }
+
+                            /**
+                             * Sync session from localstorage to Sgfd
+                             */
+                            container.syncSession = () => {
+                                updateSession(container.getSession())
+                                exportSession()
+                            }
+
+                            /**
+                             * Session update function
+                             * @param params: the params object to include all properties into localstorage session
+                             */
+                            container.updateSession = (params) => {
+                                container.syncSession()
+                                if (params) {
+                                    _s = container.getSession() || {}
+                                    Object.keys(params).forEach((p) => {
+                                        _s[p] = params[p]
+                                    })
+                                    updateSession(_s)
+                                    exportSession()
+                                }
+                            }
                         }
 
                         // Load back-end files
