@@ -12,7 +12,7 @@ Sgfd.Cli = {
          * 
          * -- Identation is very important! Don't change it! --
          */
-        conf: function(name) {
+        conf: function (name) {
             return 'var appConfig = {\n\
     front: {},\n\
     back: {},\n\
@@ -39,7 +39,7 @@ document.body.innerHTML = \'Hello world!\';',
          * 
          * -- Identation is very important! Don't change it! --
          */
-        index: function(sgfdPath) {
+        index: function (sgfdPath) {
             return '<!DOCTYPE html>\n\
 <html lang="en">\n\
     <head>\n\
@@ -59,7 +59,7 @@ document.body.innerHTML = \'Hello world!\';',
          * 
          * -- Identation is very important! Don't change it! --
          */
-        view: function(name) {
+        view: function (name) {
             name = name.charAt(0).toUpperCase() + name.substring(1);
             return 'pages.' + name + ' = function(params) {\n\
     with (Sgfd.Base) {\n\
@@ -72,7 +72,7 @@ document.body.innerHTML = \'Hello world!\';',
          * 
          * -- Identation is very important! Don't change it! --
          */
-        controller: function(name) {
+        controller: function (name) {
             name = name.charAt(0).toUpperCase() + name.substring(1);
             return 'with (Sgfd.Base) {\n\
     var ' + name + 'Controller = new Sgfd.Controller({\n\
@@ -89,7 +89,7 @@ document.body.innerHTML = \'Hello world!\';',
          * 
          * -- Identation is very important! Don't change it! --
          */
-        service: function(name) {
+        service: function (name) {
             name = name.charAt(0).toUpperCase() + name.substring(1);
             return 'with (Sgfd.Base) {\n\
     var ' + name + 'Service = new Sgfd.Service({\n\
@@ -106,7 +106,7 @@ document.body.innerHTML = \'Hello world!\';',
          * 
          * -- Identation is very important! Don't change it! --
          */
-        bridge: function(name) {
+        bridge: function (name) {
             name = name.charAt(0).toUpperCase() + name.substring(1);
             return 'with (Sgfd.Base) {\n\
     var ' + name + 'Bridge = new Sgfd.Bridge({\n\
@@ -134,21 +134,21 @@ document.body.innerHTML = \'Hello world!\';',
          * @param url: the url to fetch data.
          * @param fn: function to modify the result.
          */
-        requireFile: function(url, fn) {
+        requireFile: function (url, fn) {
             var xhr;
-            if(window.XMLHttpRequest) {
+            if (window.XMLHttpRequest) {
                 xhr = new XMLHttpRequest();
-            } else if(window.ActiveXObject) {
+            } else if (window.ActiveXObject) {
                 xhr = new ActiveXObject('Microsoft.XMLHTTP');
             } else {
                 return false;
             }
             xhr.open('GET', url, false);
-            if(xhr.overrideMimeType) {
+            if (xhr.overrideMimeType) {
                 xhr.overrideMimeType('text/plain');
             }
             xhr.send(null);
-            if(xhr.status == 200) {
+            if (xhr.status == 200) {
                 if (fn) {
                     return fn(xhr.responseText);
                 } else {
@@ -161,7 +161,7 @@ document.body.innerHTML = \'Hello world!\';',
     /**
      * Generate view file and starts download of it
      */
-    generateView: function(name) {
+    generateView: function (name) {
         var b = document.createElement('a');
         b.download = name + '.js';
         b.href = 'data:application/javascript;charset=utf-8,' +
@@ -171,7 +171,7 @@ document.body.innerHTML = \'Hello world!\';',
     /**
      * Generate controler file and starts download of it
      */
-    generateController: function(name) {
+    generateController: function (name) {
         var b = document.createElement('a');
         b.download = name + 'controller.js';
         b.href = 'data:application/javascript;charset=utf-8,' +
@@ -181,7 +181,7 @@ document.body.innerHTML = \'Hello world!\';',
     /**
      * Generate service file and starts download of it
      */
-    generateService: function(name) {
+    generateService: function (name) {
         var b = document.createElement('a');
         b.download = name + 'service.js';
         b.href = 'data:application/javascript;charset=utf-8,' +
@@ -191,7 +191,7 @@ document.body.innerHTML = \'Hello world!\';',
     /**
      * Generate bridge file and starts download of it
      */
-    generateBridge: function(name) {
+    generateBridge: function (name) {
         var b = document.createElement('a');
         b.download = name + 'bridge.js';
         b.href = 'data:application/javascript;charset=utf-8,' +
@@ -201,7 +201,7 @@ document.body.innerHTML = \'Hello world!\';',
     /**
      * Generate a file and starts download of it
      */
-    generateFile: function(name, type, mime, templateFn, params) {
+    generateFile: function (name, type, mime, templateFn, params) {
         var f = params ? templateFn(params) : templateFn;
         var b = document.createElement('a');
         b.download = name + '.' + type;
@@ -215,23 +215,27 @@ document.body.innerHTML = \'Hello world!\';',
      * @param conf: conf file path
      * @param name: the view name
      */
-    addView: function(conf, name) {
+    addView: function (conf, name) {
         // Generate files to save
-        Sgfd.Cli.utils.requireFile(conf, function(v) {
+        Sgfd.Cli.utils.requireFile(conf, function (v) {
             if (v.indexOf('views') != -1) {
-                v = v.replace(/views: \[[\n\ \'\"\,a-zA-Z0-9_-]*\]/, function(m) {
+                v = v.replace(/views: \[[\n\ \'\"\,a-zA-Z0-9_-]*\]/, function (m) {
                     return m.replace(/]/, ', \'' + name + '\']')
-                        .replace(/,\n[\ ]*}/, function(m) { return m.substring(1); });
+                        .replace(/,\n[\ ]*}/, function (m) {
+                            return m.substring(1);
+                        });
                 });
             } else {
                 v = v.replace(/back: {/, 'back: {\n\
     views: [\'' + name + '\'],\n\
-').replace(/\n[\ ]*\n/, '\n').replace(/,\n[\ ]*}/, function(m) { return m.substring(1); });
+').replace(/\n[\ ]*\n/, '\n').replace(/,\n[\ ]*}/, function (m) {
+                    return m.substring(1);
+                });
             }
-            
+
             Sgfd.Cli.generateFile('conf', 'js', 'application/javascript', v);
         });
-        
+
         Sgfd.Cli.generateView(name);
     },
     /**
@@ -240,23 +244,27 @@ document.body.innerHTML = \'Hello world!\';',
      * @param conf: conf file path
      * @param name: the controller name
      */
-    addController: function(conf, name) {
+    addController: function (conf, name) {
         // Generate files to save
-        Sgfd.Cli.utils.requireFile(conf, function(v) {
+        Sgfd.Cli.utils.requireFile(conf, function (v) {
             if (v.indexOf('controllers') != -1) {
-                v = v.replace(/controllers: \[[\n\ \'\"\,a-zA-Z0-9_-]*\]/, function(m) {
+                v = v.replace(/controllers: \[[\n\ \'\"\,a-zA-Z0-9_-]*\]/, function (m) {
                     return m.replace(/]/, ', \'' + name + '\']')
-                        .replace(/,\n[\ ]*}/, function(m) { return m.substring(1); });
+                        .replace(/,\n[\ ]*}/, function (m) {
+                            return m.substring(1);
+                        });
                 });
             } else {
                 v = v.replace(/back: {/, 'back: {\n\
     controllers: [\'' + name + '\'],\n\
-').replace(/\n[\ ]*\n/, '\n').replace(/,\n[\ ]*}/, function(m) { return m.substring(1); });
+').replace(/\n[\ ]*\n/, '\n').replace(/,\n[\ ]*}/, function (m) {
+                    return m.substring(1);
+                });
             }
-            
+
             Sgfd.Cli.generateFile('conf', 'js', 'application/javascript', v);
         });
-        
+
         Sgfd.Cli.generateController(name);
     },
     /**
@@ -265,23 +273,27 @@ document.body.innerHTML = \'Hello world!\';',
      * @param conf: conf file path
      * @param name: the service name
      */
-    addService: function(conf, name) {
+    addService: function (conf, name) {
         // Generate files to save
-        Sgfd.Cli.utils.requireFile(conf, function(v) {
+        Sgfd.Cli.utils.requireFile(conf, function (v) {
             if (v.indexOf('services') != -1) {
-                v = v.replace(/services: \[[\n\ \'\"\,a-zA-Z0-9_-]*\]/, function(m) {
+                v = v.replace(/services: \[[\n\ \'\"\,a-zA-Z0-9_-]*\]/, function (m) {
                     return m.replace(/]/, ', \'' + name + '\']')
-                        .replace(/,\n[\ ]*}/, function(m) { return m.substring(1); });
+                        .replace(/,\n[\ ]*}/, function (m) {
+                            return m.substring(1);
+                        });
                 });
             } else {
                 v = v.replace(/back: {/, 'back: {\n\
     services: [\'' + name + '\'],\n\
-').replace(/\n[\ ]*\n/, '\n').replace(/,\n[\ ]*}/, function(m) { return m.substring(1); });
+').replace(/\n[\ ]*\n/, '\n').replace(/,\n[\ ]*}/, function (m) {
+                    return m.substring(1);
+                });
             }
 
             Sgfd.Cli.generateFile('conf', 'js', 'application/javascript', v);
         });
-        
+
         Sgfd.Cli.generateService(name);
     },
     /**
@@ -290,89 +302,109 @@ document.body.innerHTML = \'Hello world!\';',
      * @param conf: conf file path
      * @param name: the bridge name
      */
-    addBridge: function(conf, name) {
+    addBridge: function (conf, name) {
         // Generate files to save
-        Sgfd.Cli.utils.requireFile(conf, function(v) {
+        Sgfd.Cli.utils.requireFile(conf, function (v) {
             if (v.indexOf('bridges') != -1) {
-                v = v.replace(/bridges: \[[\n\ \'\"\,a-zA-Z0-9_-]*\]/, function(m) {
+                v = v.replace(/bridges: \[[\n\ \'\"\,a-zA-Z0-9_-]*\]/, function (m) {
                     return m.replace(/]/, ', \'' + name + '\']')
-                        .replace(/,\n[\ ]*}/, function(m) { return m.substring(1); });
+                        .replace(/,\n[\ ]*}/, function (m) {
+                            return m.substring(1);
+                        });
                 });
             } else {
                 v = v.replace(/back: {/, 'back: {\n\
     bridges: [\'' + name + '\'],\n\
-').replace(/\n[\ ]*\n/, '\n').replace(/,\n[\ ]*}/, function(m) { return m.substring(1); });
+').replace(/\n[\ ]*\n/, '\n').replace(/,\n[\ ]*}/, function (m) {
+                    return m.substring(1);
+                });
             }
 
             Sgfd.Cli.generateFile('conf', 'js', 'application/javascript', v);
         });
-        
+
         Sgfd.Cli.generateBridge(name);
     },
     /**
      * Generate a sample app with options (controllers, views etc) and download all the files
      */
-    scafold: function(name, options, sgfdPath) {
+    scafold: function (name, options, sgfdPath) {
         var c = Sgfd.Cli.templates.conf(name);
         if (options) {
             if (options['views']) {
-                options.views.forEach(function(v) {
+                options.views.forEach(function (v) {
                     if (c.indexOf('views') != -1) {
-                        c = c.replace(/views: \[[\n\ \'\"\,a-zA-Z0-9_-]*\]/, function(m) {
+                        c = c.replace(/views: \[[\n\ \'\"\,a-zA-Z0-9_-]*\]/, function (m) {
                             return m.replace(/]/, ', \'' + v + '\']')
-                                .replace(/,\n[\ ]*}/, function(m) { return m.substring(1); });
+                                .replace(/,\n[\ ]*}/, function (m) {
+                                    return m.substring(1);
+                                });
                         });
                     } else {
-                    c = c.replace(/back: {/, 'back: {\n\
+                        c = c.replace(/back: {/, 'back: {\n\
         views: [\'' + v + '\'],\n\
-    ').replace(/\n[\ ]*\n/, '\n').replace(/,\n[\ ]*}/, function(m) { return m.substring(1); });
+    ').replace(/\n[\ ]*\n/, '\n').replace(/,\n[\ ]*}/, function (m) {
+                            return m.substring(1);
+                        });
                     }
 
                     Sgfd.Cli.generateView(v);
                 });
             }
             if (options['controllers']) {
-                options.controllers.forEach(function(v) {
+                options.controllers.forEach(function (v) {
                     if (c.indexOf('controllers') != -1) {
-                        c = c.replace(/controllers: \[[\n\ \'\"\,a-zA-Z0-9_-]*\]/, function(m) {
+                        c = c.replace(/controllers: \[[\n\ \'\"\,a-zA-Z0-9_-]*\]/, function (m) {
                             return m.replace(/]/, ', \'' + v + '\']')
-                                .replace(/,\n[\ ]*}/, function(m) { return m.substring(1); });
+                                .replace(/,\n[\ ]*}/, function (m) {
+                                    return m.substring(1);
+                                });
                         });
                     } else {
-                    c = c.replace(/back: {/, 'back: {\n\
+                        c = c.replace(/back: {/, 'back: {\n\
         controllers: [\'' + v + '\'],\n\
-    ').replace(/\n[\ ]*\n/, '\n').replace(/,\n[\ ]*}/, function(m) { return m.substring(1); });
+    ').replace(/\n[\ ]*\n/, '\n').replace(/,\n[\ ]*}/, function (m) {
+                            return m.substring(1);
+                        });
                     }
                     Sgfd.Cli.generateController(v);
                 });
             }
             if (options['services']) {
-                options.services.forEach(function(v) {
+                options.services.forEach(function (v) {
                     if (c.indexOf('services') != -1) {
-                        c = c.replace(/services: \[[\n\ \'\"\,a-zA-Z0-9_-]*\]/, function(m) {
+                        c = c.replace(/services: \[[\n\ \'\"\,a-zA-Z0-9_-]*\]/, function (m) {
                             return m.replace(/]/, ', \'' + v + '\']')
-                                .replace(/,\n[\ ]*}/, function(m) { return m.substring(1); });
+                                .replace(/,\n[\ ]*}/, function (m) {
+                                    return m.substring(1);
+                                });
                         });
                     } else {
-                    c = c.replace(/back: {/, 'back: {\n\
+                        c = c.replace(/back: {/, 'back: {\n\
         services: [\'' + v + '\'],\n\
-    ').replace(/\n[\ ]*\n/, '\n').replace(/,\n[\ ]*}/, function(m) { return m.substring(1); });
+    ').replace(/\n[\ ]*\n/, '\n').replace(/,\n[\ ]*}/, function (m) {
+                            return m.substring(1);
+                        });
                     }
 
                     Sgfd.Cli.generateService(v);
                 });
             }
             if (options['bridges']) {
-                options.bridges.forEach(function(v) {
+                options.bridges.forEach(function (v) {
                     if (c.indexOf('bridges') != -1) {
-                        c = c.replace(/bridges: \[[\n\ \'\"\,a-zA-Z0-9_-]*\]/, function(m) {
+                        c = c.replace(/bridges: \[[\n\ \'\"\,a-zA-Z0-9_-]*\]/, function (m) {
                             return m.replace(/]/, ', \'' + v + '\']')
-                                .replace(/,\n[\ ]*}/, function(m) { return m.substring(1); });
+                                .replace(/,\n[\ ]*}/, function (m) {
+                                    return m.substring(1);
+                                });
                         });
                     } else {
-                    c = c.replace(/back: {/, 'back: {\n\
+                        c = c.replace(/back: {/, 'back: {\n\
         bridges: [\'' + v + '\'],\n\
-    ').replace(/\n[\ ]*\n/, '\n').replace(/,\n[\ ]*}/, function(m) { return m.substring(1); });
+    ').replace(/\n[\ ]*\n/, '\n').replace(/,\n[\ ]*}/, function (m) {
+                            return m.substring(1);
+                        });
                     }
 
                     Sgfd.Cli.generateBridge(v);
@@ -380,7 +412,7 @@ document.body.innerHTML = \'Hello world!\';',
             }
         }
 
-        with (Sgfd.Cli) {
+        with(Sgfd.Cli) {
             generateFile('conf', 'js', 'application/javascript', c);
             generateFile('index', 'html', 'text/html', templates.index, sgfdPath || '{{ Sgfd location goes here! }}');
             generateFile('dataMappings', 'js', 'application/javascript', templates.dataMappings);
@@ -390,8 +422,8 @@ document.body.innerHTML = \'Hello world!\';',
     /**
      * Generate a sample app and download all the files
      */
-    init: function(name, sgfdPath) {
-        with (Sgfd.Cli) {
+    init: function (name, sgfdPath) {
+        with(Sgfd.Cli) {
             generateFile('conf', 'js', 'application/javascript', templates.conf, name);
             generateFile('index', 'html', 'text/html', templates.index, sgfdPath || '{{ Sgfd location goes here! }}');
             generateFile('dataMappings', 'js', 'application/javascript', templates.dataMappings);

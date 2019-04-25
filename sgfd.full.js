@@ -33,8 +33,8 @@ function Sgfd(appConfig, options) {
     /**
      * Load all needed data here. Chain order is very important!
      */
-    var loader = function() {
-        with (Sgfd.Base) {
+    var loader = function () {
+        with(Sgfd.Base) {
             var loadList = [];
 
             if (options.externalSettings) {
@@ -42,12 +42,12 @@ function Sgfd(appConfig, options) {
             }
 
             if (typeof appConfig === 'string') loadList.push(appConfig);
-            progressiveLoad(loadList, loadScript, function() {
+            progressiveLoad(loadList, loadScript, function () {
                 if (options.container.appConfig) {
                     appConfig = options.container.appConfig;
                 }
 
-                with (appConfig) {
+                with(appConfig) {
                     // verify nullities
                     if (!back['domainClasses']) back['domainClasses'] = [];
                     if (!back['bwfDomains']) back['bwfDomains'] = [];
@@ -68,7 +68,7 @@ function Sgfd(appConfig, options) {
 
                     // Verifies if has any full loading
                     if (back['full']) {
-                        back.full.forEach(function(conf) {
+                        back.full.forEach(function (conf) {
                             back.domainClasses.push(conf);
                             back.bwfDomains.push(conf);
                             back.controllers.push(conf);
@@ -76,7 +76,7 @@ function Sgfd(appConfig, options) {
                             back.views.push(conf);
                         });
                     }
-                    
+
                     // if not profuction flag, set to false
                     if (conf['production'] === undefined) conf.production = false;
 
@@ -100,7 +100,7 @@ function Sgfd(appConfig, options) {
                 }
 
                 // Then load all things
-                with (autoMerge(appConfig.front, appConfig.back, appConfig.conf)) {
+                with(autoMerge(appConfig.front, appConfig.back, appConfig.conf)) {
                     // Set default app title
                     document.title = appName;
 
@@ -114,7 +114,7 @@ function Sgfd(appConfig, options) {
                     }
 
                     // Load project dependencies
-                    progressiveLoad(dependencies, loadScript, function() {
+                    progressiveLoad(dependencies, loadScript, function () {
                         // Inject 'classLoader'
                         if (appConfig.conf['classLoader']) container['classLoader'] = new container[classLoader]();
 
@@ -123,7 +123,7 @@ function Sgfd(appConfig, options) {
 
                         // Inject views names
                         container['views'] = [];
-                        views.forEach(function(view) {
+                        views.forEach(function (view) {
                             container.views.push(view);
                         });
 
@@ -179,27 +179,27 @@ function Sgfd(appConfig, options) {
                         }
 
                         // Load back-end files
-                        progressiveLoad(domainClasses, loadDomain, function() {
-                            progressiveLoad(bridges, loadBridge, function() {
-                                progressiveLoad(services, loadService, function() {
-                                    progressiveLoad(controllers, loadController, function() {
+                        progressiveLoad(domainClasses, loadDomain, function () {
+                            progressiveLoad(bridges, loadBridge, function () {
+                                progressiveLoad(services, loadService, function () {
+                                    progressiveLoad(controllers, loadController, function () {
 
                                         // Map the classes to 'database'
                                         // TODO: change how to make this
-                                        progressiveLoad(['dataMappings.js'], loadScript, function() {
+                                        progressiveLoad(['dataMappings.js'], loadScript, function () {
                                             // If bootstrap data is set on
                                             if (bootstrap) {
                                                 progressiveLoad(['bootstrap.js'], loadScript);
                                             }
 
                                             // Load front-end files
-                                            progressiveLoad(externalScripts, loadScript, function() {
-                                                progressiveLoad(scripts, loadScriptAsset, function() {
-                                                    progressiveLoad(externalStyles, loadStyle, function() {
-                                                        progressiveLoad(styles, loadStyleAsset, function() {
-                                                            progressiveLoad(views, loadView, function() {
+                                            progressiveLoad(externalScripts, loadScript, function () {
+                                                progressiveLoad(scripts, loadScriptAsset, function () {
+                                                    progressiveLoad(externalStyles, loadStyle, function () {
+                                                        progressiveLoad(styles, loadStyleAsset, function () {
+                                                            progressiveLoad(views, loadView, function () {
                                                                 // Run main script
-                                                                progressiveLoad(['main.js'], loadScript, function() {
+                                                                progressiveLoad(['main.js'], loadScript, function () {
                                                                     // Set translated app title (if exsists)
                                                                     if (container['__']) document.title = __(appName);
                                                                 });
@@ -224,13 +224,13 @@ function Sgfd(appConfig, options) {
         /**
          * Initilizes the app
          */
-        init: function() {
+        init: function () {
             return this;
         },
         /**
          * Load the app using given configs
          */
-        load: function() {
+        load: function () {
             loader();
         }
     };
@@ -250,15 +250,15 @@ Sgfd.Base = {
      * 
      * TODO: work for custom containers (now only for window)
      */
-    progressiveLoad: function(lst, func, callback) {
+    progressiveLoad: function (lst, func, callback) {
         if (lst instanceof Array) {
             if (lst.length > 1) {
-                func(lst[0], function(){
+                func(lst[0], function () {
                     lst.shift();
                     Sgfd.Base.progressiveLoad(lst, func, callback);
                 });
             } else if (lst.length === 1) {
-                func(lst[0], callback || function(){});
+                func(lst[0], callback || function () {});
             } else {
                 callback();
             }
@@ -271,7 +271,7 @@ Sgfd.Base = {
     /**
      * Function responsible to fetch a custom file
      */
-    loadCustomFile: function(url, type, callback) {
+    loadCustomFile: function (url, type, callback) {
         // Adding the script tag to the head as suggested before
         var head = document.getElementsByTagName('head')[0];
         var script = document.createElement('script');
@@ -289,8 +289,8 @@ Sgfd.Base = {
     /**
      * Function responsible to fetch custom files
      */
-    loadCustomFiles: function(urls, type, callback) {
-        urls.forEach(function(url, i) {
+    loadCustomFiles: function (urls, type, callback) {
+        urls.forEach(function (url, i) {
             // Adding the script tag to the head as suggested before
             var head = document.getElementsByTagName('head')[0];
             var script = document.createElement('script');
@@ -311,7 +311,7 @@ Sgfd.Base = {
     /**
      * Function responsible to fetch scripts
      */
-    loadScript: function(url, callback) {
+    loadScript: function (url, callback) {
         // Adding the script tag to the head as suggested before
         var head = document.getElementsByTagName('head')[0];
         var script = document.createElement('script');
@@ -329,7 +329,7 @@ Sgfd.Base = {
     /**
      * Function responsible to fetch asset scripts
      */
-    loadScriptAsset: function(url, callback) {
+    loadScriptAsset: function (url, callback) {
         // Adding the script tag to the head as suggested before
         var head = document.getElementsByTagName('head')[0];
         var script = document.createElement('script');
@@ -347,8 +347,8 @@ Sgfd.Base = {
     /**
      * Function responsible to fetch asset scripts
      */
-    loadScriptAssets: function(urls, callback) {
-        urls.forEach(function(url, i) {
+    loadScriptAssets: function (urls, callback) {
+        urls.forEach(function (url, i) {
             // Adding the script tag to the head as suggested before
             var head = document.getElementsByTagName('head')[0];
             var script = document.createElement('script');
@@ -369,8 +369,8 @@ Sgfd.Base = {
     /**
      * Function responsible to fetch scripts
      */
-    loadScripts: function(urls, callback) {
-        urls.forEach(function(url, i) {
+    loadScripts: function (urls, callback) {
+        urls.forEach(function (url, i) {
             // Adding the script tag to the head as suggested before
             var head = document.getElementsByTagName('head')[0];
             var script = document.createElement('script');
@@ -391,7 +391,7 @@ Sgfd.Base = {
     /**
      * Function responsible to fetch bridge scripts
      */
-    loadBridge: function(url, callback) {
+    loadBridge: function (url, callback) {
         // Adding the script tag to the head as suggested before
         var head = document.getElementsByTagName('head')[0];
         var script = document.createElement('script');
@@ -409,8 +409,8 @@ Sgfd.Base = {
     /**
      * Function responsible to fetch service scripts
      */
-    loadBridges: function(urls, callback) {
-        urls.forEach(function(url, i) {
+    loadBridges: function (urls, callback) {
+        urls.forEach(function (url, i) {
             // Adding the script tag to the head as suggested before
             var head = document.getElementsByTagName('head')[0];
             var script = document.createElement('script');
@@ -431,7 +431,7 @@ Sgfd.Base = {
     /**
      * Function responsible to fetch service scripts
      */
-    loadService: function(url, callback) {
+    loadService: function (url, callback) {
         // Adding the script tag to the head as suggested before
         var head = document.getElementsByTagName('head')[0];
         var script = document.createElement('script');
@@ -449,8 +449,8 @@ Sgfd.Base = {
     /**
      * Function responsible to fetch service scripts
      */
-    loadServices: function(urls, callback) {
-        urls.forEach(function(url, i) {
+    loadServices: function (urls, callback) {
+        urls.forEach(function (url, i) {
             // Adding the script tag to the head as suggested before
             var head = document.getElementsByTagName('head')[0];
             var script = document.createElement('script');
@@ -471,7 +471,7 @@ Sgfd.Base = {
     /**
      * Function responsible to fetch controller scripts
      */
-    loadController: function(url, callback) {
+    loadController: function (url, callback) {
         // Adding the script tag to the head as suggested before
         var head = document.getElementsByTagName('head')[0];
         var script = document.createElement('script');
@@ -489,8 +489,8 @@ Sgfd.Base = {
     /**
      * Function responsible to fetch controller scripts
      */
-    loadControllers: function(urls, callback) {
-        urls.forEach(function(url, i) {
+    loadControllers: function (urls, callback) {
+        urls.forEach(function (url, i) {
             // Adding the script tag to the head as suggested before
             var head = document.getElementsByTagName('head')[0];
             var script = document.createElement('script');
@@ -511,7 +511,7 @@ Sgfd.Base = {
     /**
      * Function responsible to fetch view scripts
      */
-    loadView: function(url, callback) {
+    loadView: function (url, callback) {
         // Adding the script tag to the head as suggested before
         var head = document.getElementsByTagName('head')[0];
         var script = document.createElement('script');
@@ -529,8 +529,8 @@ Sgfd.Base = {
     /**
      * Function responsible to fetch view scripts
      */
-    loadViews: function(urls, callback) {
-        urls.forEach(function(url, i) {
+    loadViews: function (urls, callback) {
+        urls.forEach(function (url, i) {
             // Adding the script tag to the head as suggested before
             var head = document.getElementsByTagName('head')[0];
             var script = document.createElement('script');
@@ -551,7 +551,7 @@ Sgfd.Base = {
     /**
      * Function responsible to fetch domain scripts
      */
-    loadDomain: function(url, callback) {
+    loadDomain: function (url, callback) {
         // Adding the script tag to the head as suggested before
         var head = document.getElementsByTagName('head')[0];
         var script = document.createElement('script');
@@ -569,8 +569,8 @@ Sgfd.Base = {
     /**
      * Function responsible to fetch domain scripts
      */
-    loadDomains: function(urls, callback) {
-        urls.forEach(function(url, i) {
+    loadDomains: function (urls, callback) {
+        urls.forEach(function (url, i) {
             // Adding the script tag to the head as suggested before
             var head = document.getElementsByTagName('head')[0];
             var script = document.createElement('script');
@@ -591,7 +591,7 @@ Sgfd.Base = {
     /**
      * Function responsible to fetch bwf domain scripts
      */
-    loadBwfDomain: function(url, callback) {
+    loadBwfDomain: function (url, callback) {
         // Adding the script tag to the head as suggested before
         var head = document.getElementsByTagName('head')[0];
         var script = document.createElement('script');
@@ -607,8 +607,8 @@ Sgfd.Base = {
     /**
      * Function responsible to fetch bwf domain scripts
      */
-    loadBwfDomains: function(urls, callback) {
-        urls.forEach(function(url, i) {
+    loadBwfDomains: function (urls, callback) {
+        urls.forEach(function (url, i) {
             // Adding the script tag to the head as suggested before
             var head = document.getElementsByTagName('head')[0];
             var script = document.createElement('script');
@@ -629,7 +629,7 @@ Sgfd.Base = {
     /**
      * Function responsible to fetch stylesheets
      */
-    loadStyle: function(url, callback) {
+    loadStyle: function (url, callback) {
         // Adding the script tag to the head as suggested before
         var head = document.getElementsByTagName('head')[0];
         var style = document.createElement('link');
@@ -648,8 +648,8 @@ Sgfd.Base = {
     /**
      * Function responsible to fetch stylesheets
      */
-    loadStyles: function(urls, callback) {
-        urls.forEach(function(url, i) {
+    loadStyles: function (urls, callback) {
+        urls.forEach(function (url, i) {
             // Adding the script tag to the head as suggested before
             var head = document.getElementsByTagName('head')[0];
             var style = document.createElement('link');
@@ -671,7 +671,7 @@ Sgfd.Base = {
     /**
      * Function responsible to fetch asset stylesheets
      */
-    loadStyleAsset: function(url, callback) {
+    loadStyleAsset: function (url, callback) {
         // Adding the script tag to the head as suggested before
         var head = document.getElementsByTagName('head')[0];
         var style = document.createElement('link');
@@ -690,8 +690,8 @@ Sgfd.Base = {
     /**
      * Function responsible to fetch asset stylesheets
      */
-    loadStyleAssets: function(urls, callback) {
-        urls.forEach(function(url, i) {
+    loadStyleAssets: function (urls, callback) {
+        urls.forEach(function (url, i) {
             // Adding the script tag to the head as suggested before
             var head = document.getElementsByTagName('head')[0];
             var style = document.createElement('link');
@@ -713,16 +713,18 @@ Sgfd.Base = {
     /**
      * Used to merge many objects into a single one
      */
-    merge: function() {
+    merge: function () {
         var args = Array.prototype.slice.call(arguments);
         var result = {};
 
-        var merge_options = function(obj1, obj3){
-            for (var attrname in obj1) { obj3[attrname] = obj1[attrname]; }
+        var merge_options = function (obj1, obj3) {
+            for (var attrname in obj1) {
+                obj3[attrname] = obj1[attrname];
+            }
             return obj3;
         };
 
-        args.forEach(function(argument) {
+        args.forEach(function (argument) {
             result = merge_options(argument, result);
         });
 
@@ -731,16 +733,18 @@ Sgfd.Base = {
     /**
      * Used to merge many objects into a single one adding self
      */
-    autoMerge: function() {
+    autoMerge: function () {
         var args = Array.prototype.slice.call(arguments);
         var result = {};
 
-        var merge_options = function(obj1, obj3){
-            for (var attrname in obj1) { obj3[attrname] = obj1[attrname]; }
+        var merge_options = function (obj1, obj3) {
+            for (var attrname in obj1) {
+                obj3[attrname] = obj1[attrname];
+            }
             return obj3;
         };
 
-        args.forEach(function(argument) {
+        args.forEach(function (argument) {
             result = merge_options(argument, result);
         });
 
@@ -749,11 +753,11 @@ Sgfd.Base = {
     /**
      * Used for debug purposes
      */
-    trace: function(obj, key, args, callback) {
-        var metaName = ((obj.metaName !== undefined)
-            && (obj.metaName !== null)
-                && (obj.metaName !== '')) ?
-                    obj.metaName : 'NonMetaNamedClass';
+    trace: function (obj, key, args, callback) {
+        var metaName = ((obj.metaName !== undefined) &&
+                (obj.metaName !== null) &&
+                (obj.metaName !== '')) ?
+            obj.metaName : 'NonMetaNamedClass';
         console.log(metaName + '.' + key + '(', args, ')');
         if (callback) callback();
     }
@@ -763,7 +767,7 @@ Sgfd.Base = {
  * Represents a class to be used in routed objects creation
  * Is used by default to create Controllers, Services etc.
  */
-Sgfd.ConfigurableRoutedClass = function(routes, options) {
+Sgfd.ConfigurableRoutedClass = function (routes, options) {
     var c = this;
     c.prototype = {};
     var cbk = null;
@@ -772,36 +776,36 @@ Sgfd.ConfigurableRoutedClass = function(routes, options) {
         cbk = options.callback;
     }
 
-    c.prototype.init = function(op) {
-        Object.keys(routes).forEach(function(key) {
+    c.prototype.init = function (op) {
+        Object.keys(routes).forEach(function (key) {
             if (routes[key] instanceof Function) {
                 // If is debuggable
                 if (op.debug) {
                     // If dumps the database
                     if (op.transactional) {
-                        c.prototype[key] = function(args) {
-                             Sgfd.Base.trace(this, key, arguments, cbk);
+                        c.prototype[key] = function (args) {
+                            Sgfd.Base.trace(this, key, arguments, cbk);
                             //dump(dataPool.export('json'));
 
                             return routes[key].apply(this, arguments);
                         };
-                    // Not dump
+                        // Not dump
                     } else {
-                        c.prototype[key] = function(args) {
+                        c.prototype[key] = function (args) {
                             Sgfd.Base.trace(this, key, arguments, cbk);
                             return routes[key].apply(this, arguments);
                         };
                     }
-                // Not debuggable
+                    // Not debuggable
                 } else {
                     // transactional
                     if (op.transactional) {
-                        c.prototype[key] = function(args) {
+                        c.prototype[key] = function (args) {
                             //dump(dataPool.export('json'));
 
                             return routes[key].apply(this, arguments);
                         };
-                    // not transactional
+                        // not transactional
                     } else {
                         c.prototype[key] = routes[key];
                     }
@@ -819,7 +823,7 @@ Sgfd.ConfigurableRoutedClass = function(routes, options) {
 /**
  * Create a controller object based in ConfigurableRoutedClass
  */
-Sgfd.Controller = function(routes, options) {
+Sgfd.Controller = function (routes, options) {
     var _debug = undefined
     var _trans = undefined
     if (appConfig['conf']) {
@@ -848,7 +852,7 @@ Sgfd.Controller = function(routes, options) {
 /**
  * Create a service object based in ConfigurableRoutedClass
  */
-Sgfd.Service = function(routes, options) {
+Sgfd.Service = function (routes, options) {
     var _debug = undefined
     var _trans = undefined
     if (appConfig['conf']) {
@@ -877,7 +881,7 @@ Sgfd.Service = function(routes, options) {
 /**
  * Create a controller object based in ConfigurableRoutedClass
  */
-Sgfd.Bridge = function(routes, options) {
+Sgfd.Bridge = function (routes, options) {
     var _debug = undefined
     var _trans = undefined
     if (appConfig['conf']) {
@@ -906,7 +910,7 @@ Sgfd.Bridge = function(routes, options) {
 /**
  * @Override: Avoid others to get the code by this function
  */
-Sgfd.toString = function() {
+Sgfd.toString = function () {
     return 'function Sgfd() { [native code] }';
 };
 
@@ -923,7 +927,7 @@ Sgfd.Cli = {
          * 
          * -- Identation is very important! Don't change it! --
          */
-        conf: function(name) {
+        conf: function (name) {
             return 'var appConfig = {\n\
     front: {},\n\
     back: {},\n\
@@ -950,7 +954,7 @@ document.body.innerHTML = \'Hello world!\';',
          * 
          * -- Identation is very important! Don't change it! --
          */
-        index: function(sgfdPath) {
+        index: function (sgfdPath) {
             return '<!DOCTYPE html>\n\
 <html lang="en">\n\
     <head>\n\
@@ -970,7 +974,7 @@ document.body.innerHTML = \'Hello world!\';',
          * 
          * -- Identation is very important! Don't change it! --
          */
-        view: function(name) {
+        view: function (name) {
             name = name.charAt(0).toUpperCase() + name.substring(1);
             return 'pages.' + name + ' = function(params) {\n\
     with (Sgfd.Base) {\n\
@@ -983,7 +987,7 @@ document.body.innerHTML = \'Hello world!\';',
          * 
          * -- Identation is very important! Don't change it! --
          */
-        controller: function(name) {
+        controller: function (name) {
             name = name.charAt(0).toUpperCase() + name.substring(1);
             return 'with (Sgfd.Base) {\n\
     var ' + name + 'Controller = new Sgfd.Controller({\n\
@@ -1000,7 +1004,7 @@ document.body.innerHTML = \'Hello world!\';',
          * 
          * -- Identation is very important! Don't change it! --
          */
-        service: function(name) {
+        service: function (name) {
             name = name.charAt(0).toUpperCase() + name.substring(1);
             return 'with (Sgfd.Base) {\n\
     var ' + name + 'Service = new Sgfd.Service({\n\
@@ -1017,7 +1021,7 @@ document.body.innerHTML = \'Hello world!\';',
          * 
          * -- Identation is very important! Don't change it! --
          */
-        bridge: function(name) {
+        bridge: function (name) {
             name = name.charAt(0).toUpperCase() + name.substring(1);
             return 'with (Sgfd.Base) {\n\
     var ' + name + 'Bridge = new Sgfd.Bridge({\n\
@@ -1045,21 +1049,21 @@ document.body.innerHTML = \'Hello world!\';',
          * @param url: the url to fetch data.
          * @param fn: function to modify the result.
          */
-        requireFile: function(url, fn) {
+        requireFile: function (url, fn) {
             var xhr;
-            if(window.XMLHttpRequest) {
+            if (window.XMLHttpRequest) {
                 xhr = new XMLHttpRequest();
-            } else if(window.ActiveXObject) {
+            } else if (window.ActiveXObject) {
                 xhr = new ActiveXObject('Microsoft.XMLHTTP');
             } else {
                 return false;
             }
             xhr.open('GET', url, false);
-            if(xhr.overrideMimeType) {
+            if (xhr.overrideMimeType) {
                 xhr.overrideMimeType('text/plain');
             }
             xhr.send(null);
-            if(xhr.status == 200) {
+            if (xhr.status == 200) {
                 if (fn) {
                     return fn(xhr.responseText);
                 } else {
@@ -1072,7 +1076,7 @@ document.body.innerHTML = \'Hello world!\';',
     /**
      * Generate view file and starts download of it
      */
-    generateView: function(name) {
+    generateView: function (name) {
         var b = document.createElement('a');
         b.download = name + '.js';
         b.href = 'data:application/javascript;charset=utf-8,' +
@@ -1082,7 +1086,7 @@ document.body.innerHTML = \'Hello world!\';',
     /**
      * Generate controler file and starts download of it
      */
-    generateController: function(name) {
+    generateController: function (name) {
         var b = document.createElement('a');
         b.download = name + 'controller.js';
         b.href = 'data:application/javascript;charset=utf-8,' +
@@ -1092,7 +1096,7 @@ document.body.innerHTML = \'Hello world!\';',
     /**
      * Generate service file and starts download of it
      */
-    generateService: function(name) {
+    generateService: function (name) {
         var b = document.createElement('a');
         b.download = name + 'service.js';
         b.href = 'data:application/javascript;charset=utf-8,' +
@@ -1102,7 +1106,7 @@ document.body.innerHTML = \'Hello world!\';',
     /**
      * Generate bridge file and starts download of it
      */
-    generateBridge: function(name) {
+    generateBridge: function (name) {
         var b = document.createElement('a');
         b.download = name + 'bridge.js';
         b.href = 'data:application/javascript;charset=utf-8,' +
@@ -1112,7 +1116,7 @@ document.body.innerHTML = \'Hello world!\';',
     /**
      * Generate a file and starts download of it
      */
-    generateFile: function(name, type, mime, templateFn, params) {
+    generateFile: function (name, type, mime, templateFn, params) {
         var f = params ? templateFn(params) : templateFn;
         var b = document.createElement('a');
         b.download = name + '.' + type;
@@ -1126,23 +1130,27 @@ document.body.innerHTML = \'Hello world!\';',
      * @param conf: conf file path
      * @param name: the view name
      */
-    addView: function(conf, name) {
+    addView: function (conf, name) {
         // Generate files to save
-        Sgfd.Cli.utils.requireFile(conf, function(v) {
+        Sgfd.Cli.utils.requireFile(conf, function (v) {
             if (v.indexOf('views') != -1) {
-                v = v.replace(/views: \[[\n\ \'\"\,a-zA-Z0-9_-]*\]/, function(m) {
+                v = v.replace(/views: \[[\n\ \'\"\,a-zA-Z0-9_-]*\]/, function (m) {
                     return m.replace(/]/, ', \'' + name + '\']')
-                        .replace(/,\n[\ ]*}/, function(m) { return m.substring(1); });
+                        .replace(/,\n[\ ]*}/, function (m) {
+                            return m.substring(1);
+                        });
                 });
             } else {
                 v = v.replace(/back: {/, 'back: {\n\
     views: [\'' + name + '\'],\n\
-').replace(/\n[\ ]*\n/, '\n').replace(/,\n[\ ]*}/, function(m) { return m.substring(1); });
+').replace(/\n[\ ]*\n/, '\n').replace(/,\n[\ ]*}/, function (m) {
+                    return m.substring(1);
+                });
             }
-            
+
             Sgfd.Cli.generateFile('conf', 'js', 'application/javascript', v);
         });
-        
+
         Sgfd.Cli.generateView(name);
     },
     /**
@@ -1151,23 +1159,27 @@ document.body.innerHTML = \'Hello world!\';',
      * @param conf: conf file path
      * @param name: the controller name
      */
-    addController: function(conf, name) {
+    addController: function (conf, name) {
         // Generate files to save
-        Sgfd.Cli.utils.requireFile(conf, function(v) {
+        Sgfd.Cli.utils.requireFile(conf, function (v) {
             if (v.indexOf('controllers') != -1) {
-                v = v.replace(/controllers: \[[\n\ \'\"\,a-zA-Z0-9_-]*\]/, function(m) {
+                v = v.replace(/controllers: \[[\n\ \'\"\,a-zA-Z0-9_-]*\]/, function (m) {
                     return m.replace(/]/, ', \'' + name + '\']')
-                        .replace(/,\n[\ ]*}/, function(m) { return m.substring(1); });
+                        .replace(/,\n[\ ]*}/, function (m) {
+                            return m.substring(1);
+                        });
                 });
             } else {
                 v = v.replace(/back: {/, 'back: {\n\
     controllers: [\'' + name + '\'],\n\
-').replace(/\n[\ ]*\n/, '\n').replace(/,\n[\ ]*}/, function(m) { return m.substring(1); });
+').replace(/\n[\ ]*\n/, '\n').replace(/,\n[\ ]*}/, function (m) {
+                    return m.substring(1);
+                });
             }
-            
+
             Sgfd.Cli.generateFile('conf', 'js', 'application/javascript', v);
         });
-        
+
         Sgfd.Cli.generateController(name);
     },
     /**
@@ -1176,23 +1188,27 @@ document.body.innerHTML = \'Hello world!\';',
      * @param conf: conf file path
      * @param name: the service name
      */
-    addService: function(conf, name) {
+    addService: function (conf, name) {
         // Generate files to save
-        Sgfd.Cli.utils.requireFile(conf, function(v) {
+        Sgfd.Cli.utils.requireFile(conf, function (v) {
             if (v.indexOf('services') != -1) {
-                v = v.replace(/services: \[[\n\ \'\"\,a-zA-Z0-9_-]*\]/, function(m) {
+                v = v.replace(/services: \[[\n\ \'\"\,a-zA-Z0-9_-]*\]/, function (m) {
                     return m.replace(/]/, ', \'' + name + '\']')
-                        .replace(/,\n[\ ]*}/, function(m) { return m.substring(1); });
+                        .replace(/,\n[\ ]*}/, function (m) {
+                            return m.substring(1);
+                        });
                 });
             } else {
                 v = v.replace(/back: {/, 'back: {\n\
     services: [\'' + name + '\'],\n\
-').replace(/\n[\ ]*\n/, '\n').replace(/,\n[\ ]*}/, function(m) { return m.substring(1); });
+').replace(/\n[\ ]*\n/, '\n').replace(/,\n[\ ]*}/, function (m) {
+                    return m.substring(1);
+                });
             }
 
             Sgfd.Cli.generateFile('conf', 'js', 'application/javascript', v);
         });
-        
+
         Sgfd.Cli.generateService(name);
     },
     /**
@@ -1201,89 +1217,109 @@ document.body.innerHTML = \'Hello world!\';',
      * @param conf: conf file path
      * @param name: the bridge name
      */
-    addBridge: function(conf, name) {
+    addBridge: function (conf, name) {
         // Generate files to save
-        Sgfd.Cli.utils.requireFile(conf, function(v) {
+        Sgfd.Cli.utils.requireFile(conf, function (v) {
             if (v.indexOf('bridges') != -1) {
-                v = v.replace(/bridges: \[[\n\ \'\"\,a-zA-Z0-9_-]*\]/, function(m) {
+                v = v.replace(/bridges: \[[\n\ \'\"\,a-zA-Z0-9_-]*\]/, function (m) {
                     return m.replace(/]/, ', \'' + name + '\']')
-                        .replace(/,\n[\ ]*}/, function(m) { return m.substring(1); });
+                        .replace(/,\n[\ ]*}/, function (m) {
+                            return m.substring(1);
+                        });
                 });
             } else {
                 v = v.replace(/back: {/, 'back: {\n\
     bridges: [\'' + name + '\'],\n\
-').replace(/\n[\ ]*\n/, '\n').replace(/,\n[\ ]*}/, function(m) { return m.substring(1); });
+').replace(/\n[\ ]*\n/, '\n').replace(/,\n[\ ]*}/, function (m) {
+                    return m.substring(1);
+                });
             }
 
             Sgfd.Cli.generateFile('conf', 'js', 'application/javascript', v);
         });
-        
+
         Sgfd.Cli.generateBridge(name);
     },
     /**
      * Generate a sample app with options (controllers, views etc) and download all the files
      */
-    scafold: function(name, options, sgfdPath) {
+    scafold: function (name, options, sgfdPath) {
         var c = Sgfd.Cli.templates.conf(name);
         if (options) {
             if (options['views']) {
-                options.views.forEach(function(v) {
+                options.views.forEach(function (v) {
                     if (c.indexOf('views') != -1) {
-                        c = c.replace(/views: \[[\n\ \'\"\,a-zA-Z0-9_-]*\]/, function(m) {
+                        c = c.replace(/views: \[[\n\ \'\"\,a-zA-Z0-9_-]*\]/, function (m) {
                             return m.replace(/]/, ', \'' + v + '\']')
-                                .replace(/,\n[\ ]*}/, function(m) { return m.substring(1); });
+                                .replace(/,\n[\ ]*}/, function (m) {
+                                    return m.substring(1);
+                                });
                         });
                     } else {
-                    c = c.replace(/back: {/, 'back: {\n\
+                        c = c.replace(/back: {/, 'back: {\n\
         views: [\'' + v + '\'],\n\
-    ').replace(/\n[\ ]*\n/, '\n').replace(/,\n[\ ]*}/, function(m) { return m.substring(1); });
+    ').replace(/\n[\ ]*\n/, '\n').replace(/,\n[\ ]*}/, function (m) {
+                            return m.substring(1);
+                        });
                     }
 
                     Sgfd.Cli.generateView(v);
                 });
             }
             if (options['controllers']) {
-                options.controllers.forEach(function(v) {
+                options.controllers.forEach(function (v) {
                     if (c.indexOf('controllers') != -1) {
-                        c = c.replace(/controllers: \[[\n\ \'\"\,a-zA-Z0-9_-]*\]/, function(m) {
+                        c = c.replace(/controllers: \[[\n\ \'\"\,a-zA-Z0-9_-]*\]/, function (m) {
                             return m.replace(/]/, ', \'' + v + '\']')
-                                .replace(/,\n[\ ]*}/, function(m) { return m.substring(1); });
+                                .replace(/,\n[\ ]*}/, function (m) {
+                                    return m.substring(1);
+                                });
                         });
                     } else {
-                    c = c.replace(/back: {/, 'back: {\n\
+                        c = c.replace(/back: {/, 'back: {\n\
         controllers: [\'' + v + '\'],\n\
-    ').replace(/\n[\ ]*\n/, '\n').replace(/,\n[\ ]*}/, function(m) { return m.substring(1); });
+    ').replace(/\n[\ ]*\n/, '\n').replace(/,\n[\ ]*}/, function (m) {
+                            return m.substring(1);
+                        });
                     }
                     Sgfd.Cli.generateController(v);
                 });
             }
             if (options['services']) {
-                options.services.forEach(function(v) {
+                options.services.forEach(function (v) {
                     if (c.indexOf('services') != -1) {
-                        c = c.replace(/services: \[[\n\ \'\"\,a-zA-Z0-9_-]*\]/, function(m) {
+                        c = c.replace(/services: \[[\n\ \'\"\,a-zA-Z0-9_-]*\]/, function (m) {
                             return m.replace(/]/, ', \'' + v + '\']')
-                                .replace(/,\n[\ ]*}/, function(m) { return m.substring(1); });
+                                .replace(/,\n[\ ]*}/, function (m) {
+                                    return m.substring(1);
+                                });
                         });
                     } else {
-                    c = c.replace(/back: {/, 'back: {\n\
+                        c = c.replace(/back: {/, 'back: {\n\
         services: [\'' + v + '\'],\n\
-    ').replace(/\n[\ ]*\n/, '\n').replace(/,\n[\ ]*}/, function(m) { return m.substring(1); });
+    ').replace(/\n[\ ]*\n/, '\n').replace(/,\n[\ ]*}/, function (m) {
+                            return m.substring(1);
+                        });
                     }
 
                     Sgfd.Cli.generateService(v);
                 });
             }
             if (options['bridges']) {
-                options.bridges.forEach(function(v) {
+                options.bridges.forEach(function (v) {
                     if (c.indexOf('bridges') != -1) {
-                        c = c.replace(/bridges: \[[\n\ \'\"\,a-zA-Z0-9_-]*\]/, function(m) {
+                        c = c.replace(/bridges: \[[\n\ \'\"\,a-zA-Z0-9_-]*\]/, function (m) {
                             return m.replace(/]/, ', \'' + v + '\']')
-                                .replace(/,\n[\ ]*}/, function(m) { return m.substring(1); });
+                                .replace(/,\n[\ ]*}/, function (m) {
+                                    return m.substring(1);
+                                });
                         });
                     } else {
-                    c = c.replace(/back: {/, 'back: {\n\
+                        c = c.replace(/back: {/, 'back: {\n\
         bridges: [\'' + v + '\'],\n\
-    ').replace(/\n[\ ]*\n/, '\n').replace(/,\n[\ ]*}/, function(m) { return m.substring(1); });
+    ').replace(/\n[\ ]*\n/, '\n').replace(/,\n[\ ]*}/, function (m) {
+                            return m.substring(1);
+                        });
                     }
 
                     Sgfd.Cli.generateBridge(v);
@@ -1291,7 +1327,7 @@ document.body.innerHTML = \'Hello world!\';',
             }
         }
 
-        with (Sgfd.Cli) {
+        with(Sgfd.Cli) {
             generateFile('conf', 'js', 'application/javascript', c);
             generateFile('index', 'html', 'text/html', templates.index, sgfdPath || '{{ Sgfd location goes here! }}');
             generateFile('dataMappings', 'js', 'application/javascript', templates.dataMappings);
@@ -1301,8 +1337,8 @@ document.body.innerHTML = \'Hello world!\';',
     /**
      * Generate a sample app and download all the files
      */
-    init: function(name, sgfdPath) {
-        with (Sgfd.Cli) {
+    init: function (name, sgfdPath) {
+        with(Sgfd.Cli) {
             generateFile('conf', 'js', 'application/javascript', templates.conf, name);
             generateFile('index', 'html', 'text/html', templates.index, sgfdPath || '{{ Sgfd location goes here! }}');
             generateFile('dataMappings', 'js', 'application/javascript', templates.dataMappings);
